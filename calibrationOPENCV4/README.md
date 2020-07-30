@@ -1,74 +1,48 @@
-## OpenCV C++ Stereo Camera Calibration
+### This is instruction for camera calibration  
+#### 0. Install the SDK  
+Following this link to install SDK: https://github.com/TheImagingSource/tiscamera  
 
-This repository contains some sources to calibrate the intrinsics of individual cameras and also the extrinsics of a stereo pair.
+#### 1. Prepare for camera calibration. Go to the folder "/home/nvidia/Desktop/camera-calibration-master/"; source code are 
+#### 2. capture the image: go the "bin" folder from the command window and type in  
+./read
+This command will start the camera for capturing image. As shown in the following image: 
+<p align="center"> <img width = "1000" src = "https://github.com/wutongyu98/CTR_ObstacleAvoidance/blob/master/camera_calibration_Instruction/capture%20Image.png" ></img>
+</p>  
 
-### Dependencies
+**Remarking1:** make sure you arrange the three windows, including left camera window, right camera window and command window can be seen at the same time. You need to check the camera windows to adjust the calibration target position and make sure the target is in both cameras' view all the time. 
 
-- OpenCV
-- popt
+**Remarking2:** There is around 5 seconds before every image capture, and the program will count down to let you know how much time is remaining. You need to change the target postion, distance away from the camera and orientation of the target board relative to the camera during this time count down. Then freeze your motion when the count down is approaching 0, so the camera can capture the image non-blurred image; change the target position when the new count down start. The image capture program will collect 50 pairs of images.  
 
-### Compilation
+**Remarking3:** Tips for good target postion and image quality: (1) target should fully show in two cameras' view; (2) target should fill at least 50% window of the camera's view window. (3) turn around the target at different orientation (4) exposure time should be appropirate to clearly visualize the calibration target, but not over exposure.  
 
-Compile all the files using the following commands.
+#### 3. calibration left and right camera.  
 
-```bash
-mkdir build && cd build
-cmake ..
-make
-```
+##### 3.1 the camera should save all the captured images in the folder "calib_imgs". We need to make a new folder named "1" under the folder "calib_imgs" and move all the collected images to folder "1". 
 
-Make sure your are in the `build` folder to run the executables.
+##### 3.2 calibrate the left camera:  
+Go to folder "bin" from the command window, and type in  
+./calibrate -w 28 -h 17 -n 50 -s 0.015 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "bmp"  
+I assume you are using targe "18x25 | Checker Size: 15mm", and the width and height are both substracted by 1, so you have 24 and 17; the number 50 here is the image number; this program will give you the following results as you see in the following image  
+<p align="center"> <img width = "1000" src = "https://github.com/wutongyu98/CTR_ObstacleAvoidance/blob/master/camera_calibration_Instruction/left_camea_Calibration.png" ></img>
+</p>   
 
-### Get images from webcams
+**Remarking1:** Check the errors for each images, if you find some error is abnormally large, for example, error for the 18th image is 3.22312, while all others are around 0.5. You need to remove this image mannually; so for this case, you need to remove left18.bmp and right18.bmp at the same time;
+**Remarking2:** rerun the command after you remove and rename the images.  
+./calibrate -w 28 -h 17 -n 50 -s 0.015 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "bmp"   
 
-This is a small helper tool to grab frames from two webcams operating as a stereo pair. Run the following command to use it.
+##### 3.3 calibrate the right camera:  
+./calibrate -w 28 -h 17 -n 50 -s 0.015 -d "../calib_imgs/1/" -i "right" -o "cam_right.yml" -e "bmp"  
+then repeat to remove large error images;  then re-run the calibration command for both cameras.  
+##### 3.3 calibrate the stereo camera:  
+./calibrate_stereo -n 50 -u cam_left.yml -v cam_right.yml -L ../calib_imgs/1/ -R ../calib_imgs/1/ -l left -r right -o cam_stereo.yml  
+Remarking: you get the final calibration file "cam_stereo.yml"  
+#### 4 verify the calibration result  
+##### 4.1 start the two camera and capture a pair of images and name them as "left1.jpg" and "right1.jpg";  
 
-```bash
-./read -w [img_width] -h [img_height] -d [imgs_directory] -e [file_extension]
-```
+##### 4.2 copy this pair of images to the folder "/home/nvidia/Desktop/stereovision/camera-calibration/calibrationCode/calib_imgs/"; and copy the generated "camera_stereo.yml" to the folder "/home/nvidia/Desktop/ros_stereo/test/IMS_MThread_PCL_Filter_Xavier"  
 
-Once it is running, hit any key to grab frames. Images are saved with prefixes `left` and `right` in the desired directory.
+##### 4.3 open a new command window and type in "cd "/home/nvidia/Desktop/ros_stereo/test/IMS_MThread_PCL_Filter_Xavier/bin" to let you into the stereo vision test code. then type in "./main" in the command window. You will see this  
+<p align="center"> <img width = "1000" src = "https://github.com/wutongyu98/CTR_ObstacleAvoidance/blob/master/camera_calibration_Instruction/stereovision.png" ></img>
+</p>  
 
-### Intrinsic calibration of a single camera
-
-This is only for lenses which follow the pinhole model. If you have fisheye lenses with a very wide field of view then see [this](https://github.com/sourishg/fisheye_stereo_calibration) repository. The calibration saves the camera matrix and the distortion coefficients in a YAML file. The datatype for these matrices is `Mat`.
-
-Once you have compiled the sources run the following command to calibrate the intrinsics.
-
-```bash
-./calibrate -w [board_width] -h [board_height] -n [num_imgs] -s [square_size] -d [imgs_directory] -i [imgs_filename] -o [file_extension] -e [output_filename]
-```
-
-For example, the command for the test images in `calib_imgs/1/` would be
-
-```bash
-./calibrate -w 9 -h 6 -n 27 -s 0.02423 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "jpg"
-```
-
-### Stereo calibration for extrinisics
-
-Once you have the intrinsics calibrated for both the left and the right cameras, you can use their intrinsics to calibrate the extrinsics between them.
-
-```bash
-./calibrate_stereo -n [num_imgs] -u [left_cam_calib] -v [right_cam_calib] -L [left_img_dir] -R [right_img_dir] -l [left_img_prefix] -r [right_img_prefix] -o [output_calib_file]
-```
-
-For example, if you calibrated the left and the right cameras using the images in the `calib_imgs/1/` directory, the following command to compute the extrinsics.
-
-```bash
-./calibrate_stereo -n 27 -u cam_left.yml -v cam_right.yml -L ../calib_imgs/1/ -R ../calib_imgs/1/ -l left -r right -o cam_stereo.yml
-```
-
-### Undistortion and Rectification
-
-Once you have the stereo calibration data, you can remove the distortion and rectify any pair of images so that the resultant epipolar lines become scan lines.
-
-```bash
-./undistort_rectify -l [left_img_path] -r [right_img_path] -c [stereo_calib_file] -L [output_left_img] -R [output_right_img]
-```
-
-For example
-
-```bash
-./undistort_rectify -l ../calib_imgs/1/left1.jpg -r ../calib_imgs/1/right1.jpg -c cam_stereo.yml -L left.jpg -R right.jpg
-```
+If there is no 3D point cloud display, or very poor. Try to swap the image name of "left1.jpg" and "right1.jpg". If still very poor, that means the calibration result is not good, that might be caused by the calibration target are not well posed during the calibration process, and you have to recapture the image and redo the calibration. Until you get an good 3D point cloud map.  
