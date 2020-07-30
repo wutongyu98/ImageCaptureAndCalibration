@@ -21,17 +21,17 @@ This command will start the camera for capturing image. As shown in the followin
 
 ##### 3.2 calibrate the left camera:  
 Go to folder "bin" from the command window, and type in  
-./calibrate -w 28 -h 17 -n 50 -s 0.015 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "bmp"  
-I assume you are using targe "18x25 | Checker Size: 15mm", and the width and height are both substracted by 1, so you have 24 and 17; the number 50 here is the image number; this program will give you the following results as you see in the following image  
+./calibrate -w 28 -h 17 -n 50 -s 0.02 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "bmp"  
+I assume you are using targe "18x29 | Checker Size: 20mm", and the width and height are both substracted by 1, so you have 28 and 17; the number 50 here is the image number; this program will give you the following results as you see in the following image  
 <p align="center"> <img width = "1000" src = "https://github.com/wutongyu98/CTR_ObstacleAvoidance/blob/master/camera_calibration_Instruction/left_camea_Calibration.png" ></img>
 </p>   
 
 **Remarking1:** Check the errors for each images, if you find some error is abnormally large, for example, error for the 18th image is 3.22312, while all others are around 0.5. You need to remove this image mannually; so for this case, you need to remove left18.bmp and right18.bmp at the same time;
 **Remarking2:** rerun the command after you remove and rename the images.  
-./calibrate -w 28 -h 17 -n 50 -s 0.015 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "bmp"   
+./calibrate -w 28 -h 17 -n 50 -s 0.02 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "bmp"   
 
 ##### 3.3 calibrate the right camera:  
-./calibrate -w 28 -h 17 -n 50 -s 0.015 -d "../calib_imgs/1/" -i "right" -o "cam_right.yml" -e "bmp"  
+./calibrate -w 28 -h 17 -n 50 -s 0.02 -d "../calib_imgs/1/" -i "right" -o "cam_right.yml" -e "bmp"  
 then repeat to remove large error images;  then re-run the calibration command for both cameras.  
 ##### 3.3 calibrate the stereo camera:  
 ./calibrate_stereo -n 50 -u cam_left.yml -v cam_right.yml -L ../calib_imgs/1/ -R ../calib_imgs/1/ -l left -r right -o cam_stereo.yml  
