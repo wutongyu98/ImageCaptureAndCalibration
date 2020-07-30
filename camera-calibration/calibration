@@ -1,0 +1,66 @@
+./read -w 640 -h 480 -d "../calib_imgs/1/" -e jpg
+
+./calibrate -w 13 -h 10 -n 60 -s 0.02 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "jpg"
+
+./calibrate_right -w 13 -h 10 -n 60 -s 0.02 -d "../calib_imgs/1/" -i "right" -o "cam_right.yml" -e "jpg"
+
+./calibrate_stereo -n 60 -u cam_left.yml -v cam_right.yml -L ../calib_imgs/1/ -R ../calib_imgs/1/ -l left -r right -o cam_stereo.yml
+
+./undistort_rectify -l ../calib_imgs/1/left1.jpg -r ../calib_imgs/1/right1.jpg -c cam_stereo.yml -L left.jpg -R right.jpg
+
+
+
+
+
+
+./calibrate -w 28 -h 17 -n 60 -s 0.02 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "jpg"
+
+./calibrate_right -w 28 -h 17 -n 60 -s 0.02 -d "../calib_imgs/1/" -i "right" -o "cam_right.yml" -e "jpg"
+
+./calibrate_stereo -n 60 -u cam_left.yml -v cam_right.yml -L ../calib_imgs/1/ -R ../calib_imgs/1/ -l left -r right -o cam_stereo.yml
+
+
+
+
+
+
+
+
+
+
+
+./calibrate -w 15 -h 10 -n 60 -s 0.075 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "jpg"
+
+./calibrate_right -w 15 -h 10 -n 60 -s 0.075 -d "../calib_imgs/1/" -i "right" -o "cam_right.yml" -e "jpg"
+
+./calibrate_stereo -n 60 -u cam_left.yml -v cam_right.yml -L ../calib_imgs/1/ -R ../calib_imgs/1/ -l left -r right -o cam_stereo.yml
+
+./undistort_rectify -l ../calib_imgs/1/left1.jpg -r ../calib_imgs/1/right1.jpg -c cam_stereo.yml -L left.jpg -R right.jpg
+
+# resize the image 
+./rescale -w 15 -h 10 -n 47 -s 0.075 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "png"
+./rescale -w 15 -h 10 -n 47 -s 0.075 -d "../calib_imgs/1/" -i "right" -o "cam_right.yml" -e "png"
+
+./calibrate -w 15 -h 10 -n 47 -s 0.075 -d "../calib_imgs/rescale1/" -i "left" -o "cam_left.yml" -e "png"
+
+./calibrate -w 15 -h 10 -n 47 -s 0.075 -d "../calib_imgs/rescale1/" -i "right" -o "cam_right.yml" -e "png"
+
+./calibrate_stereo -n 47 -u cam_left.yml -v cam_right.yml -L ../calib_imgs/rescale1/ -R ../calib_imgs/rescale1/ -l left -r right -o cam_stereo.yml
+
+./undistort_rectify -l ../calib_imgs/rescale1/left1.png -r ../calib_imgs/rescale1/right1.png -c cam_stereo.yml -L left.png -R right.png
+
+
+
+# 14x11 CALIBRATION BOARD
+
+./calibrate -w 14 -h 11 -n 50 -s 0.03 -d "../calib_imgs/1/" -i "left" -o "cam_left.yml" -e "jpg"
+
+./calibrate_right -w 14 -h 11 -n 50 -s 0.03 -d "../calib_imgs/1/" -i "right" -o "cam_right.yml" -e "jpg"
+
+./calibrate_stereo -n 59 -u cam_left.yml -v cam_right.yml -L ../calib_imgs/1/ -R ../calib_imgs/1/ -l left -r right -o cam_stereo.yml
+
+./undistort_rectify -l ../calib_imgs/1/left1.jpg -r ../calib_imgs/1/right1.jpg -c cam_stereo.yml -L left.jpg -R right.jpg
+
+
+
+2, 12, 13, 
