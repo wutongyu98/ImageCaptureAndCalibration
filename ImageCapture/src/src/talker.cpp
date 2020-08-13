@@ -183,12 +183,12 @@ int main(int argc, char** argv)
     // of the camera, which is to be used in this program.
     
     // my camera is here 03020388 and 03020395
-//     TcamImage cam("03020388"); //monochrome camera hold by Zach
-//     TcamImage cam2("03020395");  //monochrome camera hold by Zach
+    TcamImage cam("03020388"); //monochrome camera hold by Zach
+    TcamImage cam2("03020395");  //monochrome camera hold by Zach
 //     TcamImage cam2("14910439"); //monochrome camera on robot
 //     TcamImage cam("14910441"); //monochrome camera on robot
-    TcamImage cam2("13910487"); //color camera pair 1
-    TcamImage  cam("14910477"); //color camera pair 1
+//     TcamImage cam2("13910487"); //color camera pair 1
+//     TcamImage  cam("14910477"); //color camera pair 1
     
     if(!use_img)
     {
