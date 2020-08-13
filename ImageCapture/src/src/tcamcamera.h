@@ -197,6 +197,7 @@ class TcamCamera
         void trigger();
         void set_auto_exposure();
         void set_exposure_time(int exposure_time);
+        void set_gain(int gain);
         /*
         * Set the video format for capturing
         */

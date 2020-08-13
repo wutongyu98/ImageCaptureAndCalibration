@@ -574,6 +574,17 @@ void TcamCamera::set_auto_exposure()
 
 }
 
+
+void TcamCamera::set_gain(int gain)
+{
+    
+    GValue set_gain = G_VALUE_INIT;
+    g_value_init(&set_gain, G_TYPE_INT);
+    g_value_set_int(&set_gain, gain);
+    tcam_prop_set_tcam_property(TCAM_PROP(tcambin_), "Gain", &set_gain);
+
+}
+
 void TcamCamera::set_exposure_time(int exposure_time)
 {
 
@@ -581,6 +592,8 @@ void TcamCamera::set_exposure_time(int exposure_time)
     g_value_init(&set_exposure, G_TYPE_INT);
     g_value_set_int(&set_exposure, exposure_time);
     tcam_prop_set_tcam_property(TCAM_PROP(tcambin_), "Exposure Time (us)", &set_exposure);
+//     tcam_prop_set_tcam_property(TCAM_PROP(tcambin_), "Exposure Time", &set_exposure);
+
     
 //     tcam_prop_set_tcam_property(TCAM_PROP(tcambin_), "Software Trigger", &trigger_val);
   

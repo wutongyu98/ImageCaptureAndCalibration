@@ -56,7 +56,7 @@ using namespace cv;
 using namespace ros;
 bool use_img = false;
 int count_img(1);
-int cam_index(1), cam_index2(0), old_exposure_time(5000), exposure_time(5000), cam_count(0), cam_count2(0) /*w(1440), h(1080)*/, x(0), skippedImg(1);
+int cam_index(1), cam_index2(0), old_exposure_time(58), exposure_time(58), old_gain(50), gain(50), cam_count(0), cam_count2(0) /*w(1440), h(1080)*/, x(0), skippedImg(1);
 // cv::Mat img1, img2;
 // HANDLE xiH = NULL;
 // HANDLE xiH2 = NULL;
@@ -102,6 +102,8 @@ std::string trim(const std::string& s)
 void callback(camera_publish::TutorialsConfig &config, uint32_t level) {
     
     exposure_time = config.exposureTime;
+    gain = config.gain;
+    
     enable_use_input_folder_name = config.use_input_folder_name;
     input_folder_name = config.folder_name.c_str();
     create_folder_flag = config.create_new_folder_and_save_image;
@@ -181,10 +183,12 @@ int main(int argc, char** argv)
     // of the camera, which is to be used in this program.
     
     // my camera is here 03020388 and 03020395
-    TcamImage cam("03020388"); 
-    TcamImage cam2("03020395"); 
-//     TcamImage cam2("14910439"); 
-//     TcamImage cam("14910441"); 
+//     TcamImage cam("03020388"); //monochrome camera hold by Zach
+//     TcamImage cam2("03020395");  //monochrome camera hold by Zach
+//     TcamImage cam2("14910439"); //monochrome camera on robot
+//     TcamImage cam("14910441"); //monochrome camera on robot
+    TcamImage cam2("13910487"); //color camera pair 1
+    TcamImage  cam("14910477"); //color camera pair 1
     
     if(!use_img)
     {
@@ -200,12 +204,14 @@ int main(int argc, char** argv)
         // Start the camera
         cam.start();
         cam2.start();
+        
         cam.set_auto_exposure();
         cam.set_exposure_time(exposure_time);
         cam2.set_auto_exposure();
         cam2.set_exposure_time(exposure_time);
         
-        
+        cam.set_gain(gain);
+        cam2.set_gain(gain);
        
         cout << "come to here" <<endl;
         
@@ -306,13 +312,6 @@ int main(int argc, char** argv)
     msg.another_field = 0;
     
     
-    
-    
-    
-    
-    
-    
-    
     string camera_name_left("kitti_stereo/left"), camera_name_right("kitti_stereo/right");
     image_transport::ImageTransport it(nh);
     cv_bridge::CvImage raw_out_msg;
@@ -362,9 +361,23 @@ int main(int argc, char** argv)
                 
                 cam.set_exposure_time(exposure_time);
                 cam2.set_exposure_time(exposure_time);
+                cam.set_gain(gain);
+                cam2.set_gain(gain);
             }
         }
         
+        
+        if (gain != old_gain)
+        {
+            old_gain = gain;
+            cout << "change the exposure time" << endl;
+            
+            if(!use_img)
+            {
+                cam.set_gain(gain);
+                cam2.set_gain(gain);
+            }
+        }
         
         auto now_time = std::chrono::system_clock::now();
         std::time_t nowTime = std::chrono::system_clock::to_time_t(now_time);
