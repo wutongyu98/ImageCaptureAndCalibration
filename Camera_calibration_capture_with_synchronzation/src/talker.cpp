@@ -73,6 +73,9 @@ int main(int argc, char** argv)
             std::cout << "Directory \'" << output_path << "\' created\n";
         }
     }
+    int exposure_time = 200;
+    cameras.left->SetExposureTime(exposure_time);
+    cameras.right->SetExposureTime(exposure_time);
     
     while (x<50) {
         

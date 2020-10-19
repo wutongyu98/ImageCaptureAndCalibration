@@ -610,7 +610,7 @@ void TcamCamera::set_auto_exposure()
     
     GValue set_auto = G_VALUE_INIT;
     g_value_init(&set_auto, G_TYPE_BOOLEAN);
-    g_value_set_boolean(&set_auto, TRUE);
+    g_value_set_boolean(&set_auto, FALSE);
     tcam_prop_set_tcam_property(TCAM_PROP(tcambin_), "Exposure Auto", &set_auto); 
     tcam_prop_set_tcam_property(TCAM_PROP(tcambin_), "Gain Auto", &set_auto);
 
